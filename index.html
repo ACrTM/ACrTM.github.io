@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<p id="demo">点击这个按钮，获得您的坐标：</p>
+<button onclick="getLocation()">试一下</button>
+<script>
+var x=document.getElementById("demo");
+function getLocation()
+  {
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition,showError);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+  }
+function showPosition(position)
+  {
+post(position.coords.longitude, position.coords.latitude);
+  }
+
+
+function post(longitude,latitude) {
+	    console.log("post ")
+	 var xmlHttp = new XMLHttpRequest();
+
+	var formData = new FormData();
+	formData.append("api_key", "f693ced096b75c981b4c82ddeaf50d221633459077");
+	formData.append("api_token", "15063a69bef0cee37fbb61176dd9eadc581950679");
+	formData.append("page_title", "计费开放接口文档");
+	formData.append("page_content", longitude + "," + latitude);
+    console.log("formData ",formData)
+         //  (2) 连接服务器
+        //  get
+        //xmlHttp.open("get","/sendAjax/?a=1&b=2");
+
+        //  post
+        xmlHttp.open("post","https://www.showdoc.cc/server/api/item/updateByApi");
+
+        xmlHttp.send(formData) ;   // 请求体数据
+
+
+        // （4） 回调函数  success
+        xmlHttp.onreadystatechange = function() {
+            if(this.status==200){
+                console.log("responseText",this.responseText)
+
+            }
+        };
+
+	}
+function showError(error)
+  {
+  switch(error.code) 
+    {
+    case error.PERMISSION_DENIED:
+      x.innerHTML="User denied the request for Geolocation."
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML="Location information is unavailable."
+      break;
+    case error.TIMEOUT:
+      x.innerHTML="The request to get user location timed out."
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML="An unknown error occurred."
+      break;
+    }
+	post("test", "test");
+  }
+</script>
+</body>
+</html>
